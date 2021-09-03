@@ -126,7 +126,7 @@ class ResetPassword(TestCase, RouteTestingWithKwargs):
         self.client.get(reverse(
             'app:password_resets') + '?token=1-cb440f309ad5be39a03b7e7c0ba9d4d6')
 
-        self.client.post(reverse(
+        response = self.client.post(reverse(
             'app:password_resets'), data=data)
         hashed_password = hashlib.md5('123456'.encode()).hexdigest()
 

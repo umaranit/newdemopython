@@ -1,1 +1,1 @@
-import app.views.api.users.urls
+import urls

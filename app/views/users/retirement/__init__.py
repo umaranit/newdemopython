@@ -1,1 +1,1 @@
-import app.views.users.retirement.urls
+import urls

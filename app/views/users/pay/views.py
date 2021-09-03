@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 # Django imports
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, HttpResponseRedirect
+from django.template.loader import get_template
+from django.contrib import messages
 from django.shortcuts import render
 
 from django.utils import timezone
@@ -31,7 +33,7 @@ def update_dd_info(request, user_id):
 
 @require_http_methods(["POST"])
 @user_is_authenticated
-def decrypt_bank_acct_num(request, user_id):  # pylint: disable=unused-argument
+def decrypt_bank_acct_num(request, user_id):
     form = request.POST
     if not form:
         return HttpResponse("No form")
@@ -47,14 +49,15 @@ def decrypt_bank_acct_num(request, user_id):  # pylint: disable=unused-argument
         response['success'] = True
         response.content = decrypted_account_num
         return response
-    except Pay.DoesNotExist:
+    except Pay.DoesNotExist as e:
         response['success'] = False
         return response
 
 
 @require_http_methods(["GET", "POST"])
 @user_is_authenticated
-def user_pay_index(request, user_id):  # pylint: disable=unused-argument
+def user_pay_index(request, user_id):
+    template = get_template('users/pay/index.html')
     user = utils.current_user(request)
     if user is not None:
         direct_deposits = Pay.objects.filter(user=user)
@@ -67,10 +70,10 @@ def user_pay_index(request, user_id):  # pylint: disable=unused-argument
 
 @require_http_methods(["DELETE"])
 @user_is_authenticated
-def user_pay(request, user_id, pay_id):
+def user_pay(request, user_id, id):
     if request.method == "DELETE":
-        Pay.objects.get(id=pay_id).delete()
+        Pay.objects.get(id=id).delete()
         return HttpResponse("Success!")
 
     return HttpResponse("Pay for user " +
-                        str(user_id) + " for pay with id " + str(pay_id))
+                        str(user_id) + " for pay with id " + str(id))

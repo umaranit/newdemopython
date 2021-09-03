@@ -1,6 +1,7 @@
 import datetime
 
 import pytz
+from django.http import SimpleCookie
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 from django_webtest import WebTest
@@ -117,7 +118,8 @@ class AdminDeleteUserTest(TestCase, AuthRouteTestingWithKwargs):
                                        add_messages_middleware=AuthRouteTestingWithKwargs.add_messages_middleware,
                                        views=sessions)
 
-        self.client.delete(reverse(self.route_name,kwargs=self.kwargs))  # simulate the post request
+        response = self.client.delete(reverse(self.route_name,
+                                              kwargs=self.kwargs))  # simulate the post request
         self.assertEquals(0, len(User.objects.filter(first_name="VINAITEST")))
 
     def test_not_present_user_does_not_do_anything(self):
@@ -130,7 +132,7 @@ class AdminDeleteUserTest(TestCase, AuthRouteTestingWithKwargs):
                                        path='admin/5/update_user',
                                        add_messages_middleware=AuthRouteTestingWithKwargs.add_messages_middleware,
                                        views=sessions)
-        self.client.post(reverse(self.route_name,
+        response = self.client.post(reverse(self.route_name,
                                             kwargs=self.kwargs))  # simulate the post request
         self.assertEquals(1, len(User.objects.all()))
 
@@ -193,7 +195,7 @@ class AdminUpdateUserTest(TestCase, AuthRouteTestingWithKwargs):
                                        views=sessions)
 
         self.kwargs = {'selected_id': 2}
-        self.client.post(
+        response = self.client.post(
             reverse(self.route_name, kwargs=self.kwargs),
             data={'password': 'ds', 'email': 'yo@email.com',
                   'password_confirmation': 'ds', 'first_name': 'Vinai'})
@@ -269,12 +271,12 @@ class AdminSQLInjectionInterpolationTest(WebTest):
                                        client=self.client,
                                        email="ryan.dens@example.com",
                                        password="12345",
-                                       path='http://127.0.0.1:8000/admin/1/analytics/?ip=127.0.0.1&email=&password%20FROM%20app_user%3B%20select%20user_agent=',
+                                       path='http://127.0.0.1:8000/admin/1/analytics/?ip=127.0.0.1&email=&password%20FROM%20app_user%20union%20select%20user_agent=',
                                        add_messages_middleware=AuthRouteTestingWithKwargs.add_messages_middleware,
                                        views=sessions)
 
         # The attack string may vary depending on the system used
-        url = 'http://127.0.0.1:8000/admin/1/analytics/?ip=127.0.0.1&email=&email%2C%20password%20FROM%20app_user%3B--'
+        url = 'http://127.0.0.1:8000/admin/1/analytics/?ip=127.0.0.1&email=&password%20,id%20FROM%20app_user%20union%20select%20user_agent,%20user_agent,%20id='
         response = self.client.get(url)
         self.assertTrue('email' in response.content)
         self.assertTrue('password' in response.content)

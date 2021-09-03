@@ -190,6 +190,15 @@ class UserViewsSignUpUserFormTests(WebTest):
         self.assertTrue(email_exist_message in response_message)
         user.delete()
 
+    def test_error_psql_create_user(self):
+        self.form.set('first_name', 'z' * 256)
+        response = self.form.submit()
+        self.assertEqual(response.url, '/signup/')
+        response_message = response._headers['Set-Cookie']
+        sql_message = "value too long for type character varying(255)"
+        self.assertTrue(sql_message in response_message)
+        self.form.set('first_name', self.param['first_name'])
+
     def test_redirect_and_login_on_signup_success(self):
         response = self.form.submit()
         response_message = response._headers['Set-Cookie']
@@ -277,6 +286,16 @@ class UserViewsUpdateAccountFormTests(WebTest):
         user.delete()
         self.form.set('email_new', '')
 
+    def test_error_psql_create_user(self):
+        self.form.set('first_name', 'z' * 256)
+        self.form.set('email_new', '')
+        response = self.form.submit()
+        self.assertEqual(response.url, self.url)
+        response_message = response._headers['Set-Cookie']
+        psql_message = "value too long for type character varying(255)"
+        self.assertTrue(psql_message in response_message)
+        self.form.set('first_name', '')
+
     def test_update_success(self):
         self.assertEqual(self.user.email, self.param['email'])
         self.form.set('email_new', 'zw@example.com')
@@ -312,7 +331,7 @@ class UserViewsUpdateAccountFormTests(WebTest):
         setattr(request, 'session', 'session')
         messages = FallbackStorage(request)
         setattr(request, '_messages', messages)
-        users.user_view(request, user_id=admin.user_id)
+        response = users.user_view(request, user_id=admin.user_id)
 
         # Test that admin's password has changed
         new_admin = User.objects.filter(user_id=admin.user_id).first()

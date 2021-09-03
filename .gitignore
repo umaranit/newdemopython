@@ -7,7 +7,6 @@
 *.pot
 *.py[co]
 .tox/
-db.sqlite3
 __pycache__
 MANIFEST
 dist/
@@ -15,10 +14,9 @@ docs/_build/
 docs/locale/
 node_modules/
 tests/coverage_html/
-.coverage
+tests/.coverage
 build/
 tests/report/
-pygoat/production_settings
 
 
 # Exclude virtualenv files at project base
@@ -37,4 +35,3 @@ env/
 
 #Exclude settings stuff
 local_settings.py
-*.cfg

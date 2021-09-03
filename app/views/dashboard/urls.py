@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from app.views.dashboard import views as dashboard_views
+import views as dashboard_views
 
 
 urlpatterns = [

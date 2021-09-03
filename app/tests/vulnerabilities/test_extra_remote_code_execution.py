@@ -23,7 +23,7 @@ class TestRemoteCodeExecution(TestCase):
                 'password_confirmation': '123456',
                 'user': encoded}
         try:
-            self.client.post(reverse('app:password_resets'), data=data)
+            response = self.client.post(reverse('app:password_resets'), data=data)
         except:
             pass
         self.assertTrue(os.path.isdir("hacked"))

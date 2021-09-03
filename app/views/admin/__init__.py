@@ -1,1 +1,1 @@
-import app.views.admin.urls
+import urls

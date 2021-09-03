@@ -38,5 +38,5 @@ class NoteModelTests(TestCase, Pep8ModelTests):
     def test_can_delete_note(self):
         note = Note(note_name="Hey!", pub_date=timezone.now())
         note.save()
-        Note.objects.get(note_name="Hey!").delete()
+        p = Note.objects.get(note_name="Hey!").delete()
         self.assertEquals(0, len(Note.objects.all()))

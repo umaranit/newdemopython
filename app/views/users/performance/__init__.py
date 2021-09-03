@@ -1,1 +1,1 @@
-import app.views.users.performance.urls
+import urls

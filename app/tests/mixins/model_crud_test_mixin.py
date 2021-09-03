@@ -21,7 +21,11 @@ class ModelCrudTests(object):
         for attribute in self.attributes:
             db_value = getattr(self._get_from_db(self.model), attribute)
             local_value = getattr(self.model, attribute)
-            self.assertEqual(str(db_value), str(local_value))
+            try:
+                self.assertEqual(db_value, local_value)
+            except AssertionError:
+                # Override because sometimes returns a read-only buffer that needs to be a string
+                self.assertEqual(str(db_value), local_value)
 
     def test_update_model(self):
         """
@@ -53,7 +57,7 @@ class ModelCrudTests(object):
         """Test to ensure Model is deleted when its parent is deleted.
         """
         if self.parent is not None:
-            self.parent.delete()
+            response = self.parent.delete()
 
             self.assertIsNone(self._get_from_db(self.parent), "Parent not deleted from the database")
             self.assertIsNone(self._get_from_db(self.model), "Model not deleted from database with cascade")

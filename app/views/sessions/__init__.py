@@ -1,1 +1,1 @@
-import app.views.sessions.urls
+import urls

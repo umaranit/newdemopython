@@ -1,1 +1,1 @@
-import app.views.password_resets.urls
+import urls

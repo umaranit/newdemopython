@@ -33,5 +33,5 @@ def home(request):
 
 @require_http_methods(["GET", "PATCH", "PUT", "DELETE"])
 @user_is_authenticated
-def dashboard_view(request, dashboard_id):  # pylint: disable=unused-argument
+def dashboard_view(request, dashboard_id):
     return HttpResponse("Dashboard " + str(dashboard_id))

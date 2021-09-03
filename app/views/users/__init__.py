@@ -1,1 +1,2 @@
-import app.views.users.urls
+import urls
+from messages import views as messages_views

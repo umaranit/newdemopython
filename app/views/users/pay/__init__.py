@@ -1,1 +1,1 @@
-import app.views.users.pay.urls
+import urls

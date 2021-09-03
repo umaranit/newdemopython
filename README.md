@@ -1,78 +1,76 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/68d040c745134192b362def6a0e45899)](https://app.codacy.com/app/SteveFeldman/DjanGoat?utm_source=github.com&utm_medium=referral&utm_content=Contrast-Security-OSS/DjanGoat&utm_campaign=Badge_Grade_Settings)
-[![Build Status](https://travis-ci.org/Contrast-Security-OSS/DjanGoat.svg?branch=master)](https://travis-ci.org/Contrast-Security-OSS/DjanGoat)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/b21dc2f22dd945a09d7d34a0cdaa5c4d)](https://www.codacy.com/app/SteveFeldman/DjanGoat?utm_source=github.com&utm_medium=referral&utm_content=Contrast-Security-OSS/DjanGoat&utm_campaign=Badge_Coverage)
-[![CodeFactor](https://www.codefactor.io/repository/github/contrast-security-oss/djangoat/badge)](https://www.codefactor.io/repository/github/contrast-security-oss/djangoat)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/Contrast-Security-OSS/DjanGoat.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Contrast-Security-OSS/DjanGoat/alerts/)
-<a href="https://codeclimate.com/github/Contrast-Security-OSS/DjanGoat/maintainability"><img src="https://api.codeclimate.com/v1/badges/12031df53865b695f317/maintainability" /></a>
-<a href="https://codeclimate.com/github/Contrast-Security-OSS/DjanGoat/test_coverage"><img src="https://api.codeclimate.com/v1/badges/12031df53865b695f317/test_coverage" /></a>
-[![codebeat badge](https://codebeat.co/badges/cced60a6-7204-44a6-94df-68ae676b719d)](https://codebeat.co/projects/github-com-contrast-security-oss-djangoat-master)
-[![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/Contrast-Security-OSS/DjanGoat/?ref=repository-badge)
+# DjanGoat #
 
-# DjanGoat
-
-DjanGoat is a vulnerable Django Application based in large part off the [RailsGoat](https://github.com/OWASP/railsgoat) project. The application purports to be an internal employee portal for MetaCorp, Inc but includes vulnerabilities from the [OWASP Top 10](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project) and is intended to be used as an educational tool for developers and security professionals. Any maintainers are welcome to make pull requests.
+DjanGoat is a vulnerable Django Application based in large part off the [RailsGoat](https://github.com/OWASP/railsgoat) project. The application purports to be an internal employee portal for MetaCorp, Inc but includes vulnerabilities from the [OWASP Top 10](https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project) and is intended to be used as an educational tool for developers and security professionals.
 
 ## Installation
 
 On a mac, first install python.
 
-### Initial Setup
+### How do I get set up? ###
 
-Requirements:
+First, install python and pip. On a mac the easiest solution is to use [Homebrew](https://brew.sh/).
 
- - Python 2.7
- - Pip
- - mysql (optional)
+```
+    brew install python
+```
+
+
+Next, install virtual-env
+```
+    pip install virtualenv
+```
 
 Begin by creating a virtual-env
 ```
-    pip install virtualenv
     virtualenv env
     source env/bin/activate
 ```
 
 Then install using pip
 ```
-    make install
+    pip install -r requirements.txt
 ```
 
-### DB-Setup
+### DB-Setup ###
 
-#### SQLite
+Now we need to setup our database
+1. Install [PostgreSQL](https://www.postgresql.org/download/). 
+Please note the host and port number during installation so they can 
+be set in your production_settings.py file. To make sure PostgreSQL is 
+setup properly follow these steps:
    
-Djangoat uses a SQLite database by default. To deploy the server locally with a SQLite database, use:
-```
-    make run
-```
-
-This will initialize and migrate a new (gitignored) SQLite database `db.sqlite3` in the root project directory. It will then run the server locally.
-
-At any point after the database has been migrated, it can be seeded with `python manage.py seed`.
-
-#### MySQL
-
-1. Make sure you have mysql installed and run the following to
-setup the database
+   a) Run `pg_config` in terminal.
+    
+   b) If you get a not found error, run `sudo find / -name pg_config`. 
+   There should be a path of the form 'Library/PostgreSQL/9.5/bin/pg_profile'
+   
+   c) Add the path, minus the '/pg_profile' to .bash_profile in your home directory
+   `export PATH=/Library/PostgreSQL/9.5/bin:$PATH`. Make sure to replace this with your appropriate path
+   
+   d) Restart terminal, then run `pg_config` again to make sure it is properly working
+   
+2. Setup the database
 
 ```
-    mysql -u root -p
-    CREATE DATABASE `db_name`;
-    CREATE USER 'username'@'localhost' IDENTIFIED BY 'your_password';
-    GRANT ALL PRIVILEGES ON `db_name`.* TO 'username'@'localhost';
-    FLUSH PRIVILEGES;
-    quit
+    $ psql -U postgres
+    postgres=# CREATE DATABASE djangoat;
+    postgres=# \c djangoat
+    djangoat=# CREATE USER your_username WITH BY 'your_password';
+    djangoat=# GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO your_username;
+    djangoat=# \q
 ```
 
-2. Go to pygoat/production_settings.py and fill out the given information for your database.
+3. Go to production_settings.py in the inner pygoat folder and fill out the given information
+   for your database. Make sure that host and port number are filled out, as they are not required for mysql
 
-3. Migrate the models and associated database data
+4. Migrate the models and associated database data
 
 ```
     python manage.py makemigrations
     python manage.py migrate
 ```
 
-4. To set up seed data you can run:
+5. To set up seed data you can run:
 
 ```
     python manage.py seed
@@ -81,41 +79,34 @@ setup the database
 For developers create a local_settings.py file in the pygoat folder
 that mocks production_setting.py.
 
-If Django does not recognize MySQL after the setup above, try installing mysql-python and migrate again
-
-```
-    pip install mysql-python
-```
-
 Finally run on localhost:8000
 ```
     python manage.py runserver
 ```
 
-#### PostgreSQL
-
-If you want to setup DjanGoat with a PostgreSQL database, checkout the PostgreSQL branch with the following command:
-```
-    $ git checkout postgresql-database
-```
-The PostgreSQL branch has modified documentation and tests.
-
-### Testing
+### Testing ###
 To run tests, simply run:
 ```
-    make test
+    python manage.py test app
 ```
 
+### Linting ###
 
-### Linting
+To run the `pylint` before running on Jenkins, run:
 
-To run `pylint` using the provided `.pylintrc` configuration file:
 ```
-    make lint
+pylint app pygoat
 ```
 
-## Tutorial
+### Docker ###
+For Docker when you're testing locally make sure you give executable
+permissions to build.sh by running
+```
+chmod +x build.sh
+```
+
+## Tutorial ##
 Tutorial information on the various vulnerabilities in this application are [here](docs/home.md).
 
-## Acknowledgements
+## Acknowledgements ##
 The development [team](docs/acknowledgements.md).

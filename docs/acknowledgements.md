@@ -10,10 +10,6 @@ projects, for all their hard work.
 We would especially like to thank Galen Palmer and Justin Leo for overseeing us throughout
 the project. 
 
-![Team Picture](team.jpg)
-Left to right: Alice Duan, Vinai Rachakonda, Justin Leo, Galen Palmer, Ryan Dens, Ziyang Wang
-
-
 ## Ryan Dens
 Ryan is a member of Johns Hopkins University Class of 2019 as a Computer Science major 
 and Applied Mathematics and Statistics minor. 
@@ -23,9 +19,6 @@ and Applied Mathematics and Statistics minor.
 
 ## Alice Duan
 Alice is a member of Carnegie Mellon University Class of 2019 as a Computer Science major.
-
-[![Alice Duan LinkedIn](ln.png)](https://www.linkedin.com/in/alice-duan-ab8496146/)
-[![Alice Duan Github](GitHub-Mark-32px.png)](https://github.com/alice-duan)
 
 ## Vinai Rachakonda
 Vinai studies Computer Science at the University of Pennsylvania (Class of 2020)

@@ -1,1 +1,1 @@
-import app.models.User.user
+import user

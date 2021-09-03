@@ -5,6 +5,7 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from app.models.User.user import User
+from django.contrib.messages import get_messages
 
 
 @require_http_methods(["GET"])
@@ -13,7 +14,7 @@ def login(request):
 
 
 @require_http_methods(["GET"])
-def logout(request):  # pylint: disable=unused-argument
+def logout(request):
     response = redirect("/login")
     response.delete_cookie('auth_token')
     return response

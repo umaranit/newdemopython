@@ -5,7 +5,7 @@ import pytz
 from Crypto import Random
 from django.core.management.base import BaseCommand
 
-from app.models import User, PaidTimeOff, Retirement, Schedule, KeyManagement, WorkInfo, Performance, Message
+from app.models import *
 
 users = [
     {
@@ -344,11 +344,13 @@ class Command(BaseCommand):
             Schedule.objects.create(**obj)
 
     def create_key_management(self):
-        for counter in range(1, len(users) + 1):
+        counter = 1
+        for obj in users:
             user = User.objects.get(user_id=counter)
             KeyManagement.objects.create(iv=binascii.hexlify(Random.new().read(8)), user=user,
                                          created_at=pytz.utc.localize(datetime.datetime.now()),
                                          updated_at=pytz.utc.localize(datetime.datetime.now()))
+            counter = counter + 1
 
     def create_work_info(self):
         for obj in work_info:
